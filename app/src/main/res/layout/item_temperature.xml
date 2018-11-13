@@ -2,6 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+        <import type="android.text.format.DateUtils" />
+
         <variable
                 name="temperature"
                 type="sk.momosi.intelligenthouse.model.TemperatureItem"/>
@@ -25,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:text="@{Long.toString(temperature.timestamp)}"
+                android:text="@{DateUtils.getRelativeTimeSpanString(temperature.timestamp)}"
                 android:padding="20dp"/>
 
     </LinearLayout>

@@ -1,28 +1,17 @@
-package sk.momosi.intelligenthouse.ui
+package sk.momosi.intelligenthouse.ui.temperature
 
-import android.arch.lifecycle.ViewModel
-import android.databinding.ObservableArrayList
-import android.databinding.ObservableBoolean
-import android.databinding.ObservableList
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import sk.momosi.intelligenthouse.model.TemperatureItem
+import sk.momosi.intelligenthouse.ui.BaseListViewModel
 
-class TemperatureListViewModel: ViewModel() {
+class Temperature01ListViewModel: BaseListViewModel<TemperatureItem>() {
 
-    val temperatures: ObservableList<TemperatureItem> = ObservableArrayList()
-
-    val isLoading = ObservableBoolean(true)
-
-    val isEmpty = ObservableBoolean(false)
-
-    val isError = ObservableBoolean(false)
-
-    fun loadData() {
+    override fun loadData() {
         FirebaseDatabase.getInstance()
-            .getReference("data/temp_room_2")
+            .getReference("data/temp_room_1").orderByChild("timestamp")
             .addValueEventListener(object : ValueEventListener {
 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {

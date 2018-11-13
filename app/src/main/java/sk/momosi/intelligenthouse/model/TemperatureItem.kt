@@ -19,7 +19,7 @@ data class TemperatureItem(
         fun fromMap(id: String, map: Map<String, Any>) = TemperatureItem(
             id = id,
             value = map["value"] as Double,
-            timestamp = map["timestamp"] as Long
+            timestamp = if (map["timestamp"] == null) 0 else map["timestamp"] as Long
         )
     }
 }
