@@ -2,15 +2,16 @@ package sk.momosi.intelligenthouse.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import java.text.DecimalFormat
 import kotlin.math.absoluteValue
+import kotlin.math.truncate
 
 @Parcelize
 data class TemperatureItem(
-    val id: String = "",
     val value: Double,
     val timestamp: Long
 ) : Parcelable {
+
+    constructor() : this(-999.9, 0L)
 
     fun toMap(): Map<String, Any> = mapOf(
         Pair("value", value),
@@ -18,18 +19,20 @@ data class TemperatureItem(
     )
 
     companion object {
-        fun fromMap(id: String, map: Map<String, Any>) = TemperatureItem(
-            id = id,
-            value = map["value"] as Double,
-            timestamp = if (map["timestamp"] == null) 0 else map["timestamp"] as Long
-        )
+        fun fromMap(map: Map<String, Any>): TemperatureItem {
+            val _val = map["value"]
+            return TemperatureItem(
+                value = if (_val is Long) _val.toDouble() else _val as Double,
+                timestamp = if (map["timestamp"] == null) 0 else map["timestamp"] as Long
+            )
+        }
     }
 
     fun getTemperatureBig(): String {
-        return DecimalFormat("#.#").format(((value * 10).toLong()) / 10.0)
+        return String.format("%.0f", truncate(value))
     }
 
     fun getTemperatureSmall(): String {
-        return String.format("%02d", (value * 1000).toInt().absoluteValue % 100)
+        return String.format(".%03d", (value * 1000).toInt().absoluteValue % 1000)
     }
 }

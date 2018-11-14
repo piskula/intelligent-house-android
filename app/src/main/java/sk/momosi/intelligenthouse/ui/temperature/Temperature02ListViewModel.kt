@@ -19,7 +19,7 @@ class Temperature02ListViewModel: BaseListViewModel<TemperatureItem>() {
 
                     if (dataSnapshot.exists()) {
                         dataSnapshot.children.forEach {
-                            temperatures.add(TemperatureItem.fromMap(it.key!!, it.value as Map<String, Any>))
+                            temperatures.add(TemperatureItem.fromMap(it.value as Map<String, Any>))
                         }
                     }
 
