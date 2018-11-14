@@ -27,7 +27,7 @@ class IntelligentHouse: Application() {
 
         val channel = NotificationChannel(NOTIF_CHANNEL_OUT_OF_ORDER, name, NotificationManager.IMPORTANCE_DEFAULT)
         channel.enableLights(true)
-        channel.lightColor = Color.RED
+        channel.lightColor = Color.WHITE
         channel.enableVibration(true)
         channel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
 
