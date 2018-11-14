@@ -3,6 +3,9 @@ package sk.momosi.intelligenthouse
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -11,6 +14,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import sk.momosi.intelligenthouse.model.TemperatureItem
 import sk.momosi.intelligenthouse.ui.temperature.Temperature01Activity
 import sk.momosi.intelligenthouse.ui.temperature.Temperature02Activity
+
+const val REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,6 +34,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupDashboardSensors()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (checkPlayServices()) {
+            // Then we're good to go!
+        } else {
+            Toast.makeText(this, "Problem with Play Services", Toast.LENGTH_SHORT).show()
+            TODO("handle play services")
+        }
     }
 
     fun setupDashboardSensors() {
@@ -82,6 +97,23 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
+    }
+
+    private fun checkPlayServices(): Boolean {
+        val googleApi = GoogleApiAvailability.getInstance()
+        val status = googleApi.isGooglePlayServicesAvailable(this)
+        if (status != ConnectionResult.SUCCESS) {
+            if (googleApi.isUserResolvableError(status)) {
+                googleApi.getErrorDialog(this, status, REQUEST_CODE_RECOVER_PLAY_SERVICES).show()
+            } else {
+                Toast.makeText(this, "This device is not supported.",
+                    Toast.LENGTH_LONG).show()
+                finish()
+            }
+            return false
+        }
+        return true
+
     }
 
 }
