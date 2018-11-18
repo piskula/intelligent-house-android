@@ -3,5 +3,6 @@
     <string name="notif_out_of_order">Out of order notifications</string>
 
     <string name="no_data">There are no data</string>
+    <string name="last_health_check">Last health check:</string>
 
 </resources>

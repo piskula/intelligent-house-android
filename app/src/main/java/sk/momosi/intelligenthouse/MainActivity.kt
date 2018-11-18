@@ -1,8 +1,11 @@
 package sk.momosi.intelligenthouse
 
 import android.content.Intent
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.text.format.DateUtils
+import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -47,13 +50,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setupDashboardSensors() {
-        setTemp01()
-        setTemp02()
+        setTempSensor("temp_room_1", temp_01_value)
+        setTempSensor("temp_room_2", temp_02_value)
+        setLastHealthCheck()
+        setTempSensorHealth("temp_room_1", temp_01_value)
+        setTempSensorHealth("temp_room_2", temp_02_value)
     }
 
-    fun setTemp02() {
+    private fun setTempSensorHealth(sensorId: String, txt: TextView) {
         FirebaseDatabase.getInstance()
-            .getReference("data/temp_room_2").orderByChild("timestamp")
+            .getReference("activeErrorNotification")
+            .child(sensorId)
+            .addValueEventListener(object : ValueEventListener {
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        txt.setTextColor(Color.RED)
+                    } else {
+                        txt.setTextColor(Color.BLACK)
+                    }
+                }
+
+                override fun onCancelled(p0: DatabaseError) {}
+
+            })
+
+    }
+
+    private fun setTempSensor(sensorId: String, txt: TextView) {
+        FirebaseDatabase.getInstance()
+            .getReference("data/$sensorId").orderByChild("timestamp")
             .limitToLast(1)
             .addValueEventListener(object : ValueEventListener {
 
@@ -61,39 +87,36 @@ class MainActivity : AppCompatActivity() {
                     if (dataSnapshot.exists()) {
                         val item = dataSnapshot.children.first().getValue(TemperatureItem::class.java)
                         if (item != null) {
-                            temp_02_value.text = "${item.value} \u00B0C"
+                            txt.text = "${item.value} \u00B0C"
                             return
                         }
                     }
-                    temp_02_value.text = "--"
+                    txt.text = "--"
                 }
 
                 override fun onCancelled(p0: DatabaseError) {
-                    temp_02_value.text = "--"
+                    txt.text = "--"
                 }
 
             })
     }
 
-    fun setTemp01() {
+    private fun setLastHealthCheck() {
         FirebaseDatabase.getInstance()
-            .getReference("data/temp_room_1").orderByChild("timestamp")
-            .limitToLast(1)
+            .reference.child("lastDeathThresholdCheck")
             .addValueEventListener(object : ValueEventListener {
 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        val item = dataSnapshot.children.first().getValue(TemperatureItem::class.java)
-                        if (item != null) {
-                            temp_01_value.text = "${item.value} \u00B0C"
-                            return
-                        }
+                        last_check.text =
+                                DateUtils.getRelativeTimeSpanString(dataSnapshot.getValue(Long::class.java) ?: 0)
+                        return
                     }
-                    temp_01_value.text = "--"
+                    last_check.text = "--"
                 }
 
                 override fun onCancelled(p0: DatabaseError) {
-                    temp_01_value.text = "--"
+                    last_check.text = "--"
                 }
 
             })
@@ -106,8 +129,10 @@ class MainActivity : AppCompatActivity() {
             if (googleApi.isUserResolvableError(status)) {
                 googleApi.getErrorDialog(this, status, REQUEST_CODE_RECOVER_PLAY_SERVICES).show()
             } else {
-                Toast.makeText(this, "This device is not supported.",
-                    Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this, "This device is not supported.",
+                    Toast.LENGTH_LONG
+                ).show()
                 finish()
             }
             return false
