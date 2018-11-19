@@ -5,4 +5,10 @@
     <string name="no_data">There are no data</string>
     <string name="last_health_check">Last health check:</string>
 
+    <string name="notif_missing_values_from">Missing values from:</string>
+    <string name="notif_error_empty">Some sensors did not send values, but now they are back to normal</string>
+    <string name="notif_error_exists">Some sensors did not send values</string>
+    <string name="notif_title_error_empty">Everything OK</string>
+    <string name="notif_title_error_exists">Something is happening</string>
+
 </resources>
