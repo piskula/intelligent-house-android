@@ -15,8 +15,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
 import sk.momosi.intelligenthouse.model.TemperatureItem
-import sk.momosi.intelligenthouse.ui.temperature.Temperature01Activity
-import sk.momosi.intelligenthouse.ui.temperature.Temperature02Activity
+import sk.momosi.intelligenthouse.ui.temperature.SENSOR_ID
+import sk.momosi.intelligenthouse.ui.temperature.TemperatureActivity
 
 const val REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001
 
@@ -27,12 +27,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         button_temp_01.setOnClickListener {
-            intent = Intent(this, Temperature01Activity::class.java)
+            intent = Intent(this, TemperatureActivity::class.java)
+                .putExtra(SENSOR_ID, "temp_room_1")
             startActivity(intent)
         }
 
         button_temp_02.setOnClickListener {
-            intent = Intent(this, Temperature02Activity::class.java)
+            intent = Intent(this, TemperatureActivity::class.java)
+                .putExtra(SENSOR_ID, "temp_room_2")
             startActivity(intent)
         }
 
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setupDashboardSensors() {
+    private fun setupDashboardSensors() {
         setTempSensor("temp_room_1", temp_01_value)
         setTempSensor("temp_room_2", temp_02_value)
         setLastHealthCheck()

@@ -7,11 +7,11 @@ import com.google.firebase.database.ValueEventListener
 import sk.momosi.intelligenthouse.model.TemperatureItem
 import sk.momosi.intelligenthouse.ui.BaseListViewModel
 
-class Temperature02ListViewModel: BaseListViewModel<TemperatureItem>() {
+class TemperatureListViewModel(private val sensorId: String): BaseListViewModel<TemperatureItem>() {
 
     override fun loadData() {
         FirebaseDatabase.getInstance()
-            .getReference("data/temp_room_2").orderByChild("timestamp")
+            .getReference("data/$sensorId").orderByChild("timestamp")
             .addValueEventListener(object : ValueEventListener {
 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
