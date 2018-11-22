@@ -21,7 +21,7 @@
         </activity>
 
         <activity
-                android:name=".ui.temperature.TemperatureActivity"
+                android:name=".ui.listdays.DayListActivity"
                 android:parentActivityName=".MainActivity"/>
 
         <service android:name=".MyFirebaseMessagingService"

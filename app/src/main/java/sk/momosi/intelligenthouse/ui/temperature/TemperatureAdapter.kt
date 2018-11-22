@@ -1,24 +1,21 @@
 package sk.momosi.intelligenthouse.ui.temperature
 
 import android.support.v7.widget.RecyclerView
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import sk.momosi.intelligenthouse.databinding.ItemTemperatureBinding
 import sk.momosi.intelligenthouse.model.TemperatureItem
-import sk.momosi.intelligenthouse.ui.BaseListViewModel
 
 
 class TemperatureAdapter(
     var data: List<TemperatureItem> = emptyList(),
-    val viewModel: BaseListViewModel<TemperatureItem>
+    val viewModel: TemperatureListViewModel
 ) : RecyclerView.Adapter<TemperatureAdapter.TemperatureViewHolder>() {
 
     override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: TemperatureViewHolder, position: Int) {
         holder.bind(data[position])
-        val output = DateUtils.getRelativeTimeSpanString(data[position].timestamp)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): TemperatureViewHolder {

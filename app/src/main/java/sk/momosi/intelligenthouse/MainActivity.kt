@@ -5,18 +5,15 @@ import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
-import sk.momosi.intelligenthouse.model.TemperatureItem
-import sk.momosi.intelligenthouse.ui.temperature.SENSOR_ID
-import sk.momosi.intelligenthouse.ui.temperature.TemperatureActivity
+import sk.momosi.intelligenthouse.ui.listdays.SENSOR_ID
+import sk.momosi.intelligenthouse.ui.listdays.DayListActivity
 
 const val REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001
 
@@ -27,13 +24,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         button_temp_01.setOnClickListener {
-            intent = Intent(this, TemperatureActivity::class.java)
+            intent = Intent(this, DayListActivity::class.java)
                 .putExtra(SENSOR_ID, "temp_room_1")
             startActivity(intent)
         }
 
         button_temp_02.setOnClickListener {
-            intent = Intent(this, TemperatureActivity::class.java)
+            intent = Intent(this, DayListActivity::class.java)
                 .putExtra(SENSOR_ID, "temp_room_2")
             startActivity(intent)
         }
@@ -76,30 +73,34 @@ class MainActivity : AppCompatActivity() {
                 override fun onCancelled(p0: DatabaseError) {}
 
             })
-
     }
 
     private fun setTempSensor(sensorId: String, txt: TextView) {
         FirebaseDatabase.getInstance()
-            .getReference("data/$sensorId").orderByChild("timestamp")
+            .getReference("data/$sensorId").orderByKey()
             .limitToLast(1)
-            .addValueEventListener(object : ValueEventListener {
-
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        val item = dataSnapshot.children.first().getValue(TemperatureItem::class.java)
-                        if (item != null) {
-                            txt.text = "${item.value} \u00B0C"
-                            return
-                        }
-                    }
-                    txt.text = "--"
-                }
-
+            .addChildEventListener(object : ChildEventListener {
                 override fun onCancelled(p0: DatabaseError) {
                     txt.text = "--"
                 }
 
+                override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+                    txt.text = "--"
+                }
+
+                override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                    Log.e("childChanged $sensorId", p0.children.last().value.toString());
+                    txt.text = "${p0.children.last().value} \u00B0C"
+                }
+
+                override fun onChildRemoved(p0: DataSnapshot) {
+                    txt.text = "--"
+                }
+
+                override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                    Log.e("Added $sensorId", p0.children.last().value.toString());
+                    txt.text = "${p0.children.last().value} \u00B0C"
+                }
             })
     }
 
