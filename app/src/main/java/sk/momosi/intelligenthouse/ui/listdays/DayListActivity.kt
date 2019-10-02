@@ -38,7 +38,6 @@ class DayListActivity : AppCompatActivity() {
         manager.reverseLayout = true
 
         binding.viewModel = viewModel
-        day_list.adapter = DayAdapter(viewModel = viewModel)
 
     }
 
