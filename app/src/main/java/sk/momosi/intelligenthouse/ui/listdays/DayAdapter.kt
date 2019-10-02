@@ -4,13 +4,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import sk.momosi.intelligenthouse.databinding.ItemDayBinding
-import sk.momosi.intelligenthouse.ui.BaseListViewModel
 import java.time.LocalDate
 
 
 class DayAdapter(
-    var data: List<LocalDate> = emptyList(),
-    val viewModel: BaseListViewModel
+    var data: List<LocalDate> = emptyList()
 ) : RecyclerView.Adapter<DayAdapter.DayViewHolder>() {
 
     override fun getItemCount(): Int = data.size

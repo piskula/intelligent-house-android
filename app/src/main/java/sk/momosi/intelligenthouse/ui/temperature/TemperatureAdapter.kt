@@ -8,8 +8,7 @@ import sk.momosi.intelligenthouse.model.TemperatureItem
 
 
 class TemperatureAdapter(
-    var data: List<TemperatureItem> = emptyList(),
-    val viewModel: TemperatureListViewModel
+    var data: List<TemperatureItem> = emptyList()
 ) : RecyclerView.Adapter<TemperatureAdapter.TemperatureViewHolder>() {
 
     override fun getItemCount(): Int = data.size
